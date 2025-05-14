@@ -12,16 +12,21 @@ namespace Cat_Animation_Meme
         Texture2D background;
         Rectangle window;
 
-        Texture2D cat;
+        Texture2D catTexture;
         Rectangle catRect;
 
-        Texture2D catHead;
+        Texture2D catHeadTexture;
         Rectangle catHeadRect;
+        Vector2 catHeadSpeed;
 
-        Texture2D catBody;
+        Texture2D catBodyTexture;
         Rectangle catBodyRect;
 
+        Texture2D catIntroTexture;
+        Rectangle catIntroRect;
+        Vector2 catIntroSpeed;
 
+        MouseState mouseState;
 
         public Game1()
         {
@@ -52,14 +57,19 @@ namespace Cat_Animation_Meme
 
             background = Content.Load<Texture2D>("cat_galaxy_background");
 
-            cat = Content.Load<Texture2D>("cat_base");
-            catBody = Content.Load<Texture2D>("cat_body");
-            catHead = Content.Load<Texture2D>("cat_head");
+            catTexture = Content.Load<Texture2D>("cat_base");
+            catBodyTexture = Content.Load<Texture2D>("cat_body");
+            catHeadTexture = Content.Load<Texture2D>("cat_head");
+            catIntroTexture = Content.Load<Texture2D>("cat_intro");
+            
 
         }
 
         protected override void Update(GameTime gameTime)
         {
+            mouseState = Mouse.GetState();
+            this.Window.Title = "x =" + mouseState.X + ", y = " + mouseState.Y;
+
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
@@ -73,6 +83,18 @@ namespace Cat_Animation_Meme
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
+
+            _spriteBatch.Begin();
+
+            _spriteBatch.Draw(background, new Rectangle(0, 0, 800, 600),Color.White);
+
+            _spriteBatch.Draw(catBodyTexture, new Rectangle(125, 50, 550, 550), Color.White);
+            _spriteBatch.Draw(catHeadTexture, new Rectangle(125, 50, 550, 550), Color.White);
+
+            _spriteBatch.Draw(catIntroTexture, new Rectangle(100,0,600,600), Color.White);
+
+            _spriteBatch.End();
+
 
             base.Draw(gameTime);
         }
