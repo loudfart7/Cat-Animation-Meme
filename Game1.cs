@@ -1,9 +1,18 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Reflection.Emit;
 
 namespace Cat_Animation_Meme
 {
+
+    enum Screen
+    {
+        Intro,
+        End,
+        Galaxy
+    }
+
     public class Game1 : Game
     {
         private GraphicsDeviceManager _graphics;
@@ -28,6 +37,8 @@ namespace Cat_Animation_Meme
 
         MouseState mouseState;
 
+        Screen screen;
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -40,6 +51,10 @@ namespace Cat_Animation_Meme
             // TODO: Add your initialization logic here
 
             window = new Rectangle(0, 0, 800, 600);
+            screen = Screen.Intro;
+
+            catHeadRect = new Rectangle(125, 50, 550, 550);
+            catHeadSpeed = new Vector2(2, 2);
 
             _graphics.PreferredBackBufferWidth = window.Width;
             _graphics.PreferredBackBufferHeight = window.Height;
@@ -61,7 +76,6 @@ namespace Cat_Animation_Meme
             catBodyTexture = Content.Load<Texture2D>("cat_body");
             catHeadTexture = Content.Load<Texture2D>("cat_head");
             catIntroTexture = Content.Load<Texture2D>("cat_intro");
-            
 
         }
 
@@ -75,7 +89,23 @@ namespace Cat_Animation_Meme
 
             // TODO: Add your update logic here
 
-            base.Update(gameTime);
+            if (screen == Screen.Intro)
+            {
+                if (mouseState.LeftButton == ButtonState.Pressed)
+                    screen = Screen.Galaxy;
+            }
+
+            if (screen == Screen.Galaxy)
+            {
+                catHeadRect.X += (int)catHeadSpeed.X;
+                if (catHeadRect.Right >= window.Width || catHeadRect.Left <= 0)
+                    catHeadSpeed.X *= -1;
+                catHeadRect.Y += (int)catHeadSpeed.Y;
+                if (catHeadRect.Top >= 150)
+                    catHeadRect.Y = - catHeadRect.Height;
+            }
+
+                base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
@@ -86,15 +116,23 @@ namespace Cat_Animation_Meme
 
             _spriteBatch.Begin();
 
-            _spriteBatch.Draw(background, new Rectangle(0, 0, 800, 600),Color.White);
+            if (screen == Screen.Intro)
+            {
+                _spriteBatch.Draw(background, new Rectangle(0, 0, 800, 600), Color.DarkGray);
 
-            _spriteBatch.Draw(catBodyTexture, new Rectangle(125, 50, 550, 550), Color.White);
-            _spriteBatch.Draw(catHeadTexture, new Rectangle(125, 50, 550, 550), Color.White);
+                _spriteBatch.Draw(catBodyTexture, new Rectangle(125, 50, 550, 550), Color.DarkGray);
+                _spriteBatch.Draw(catHeadTexture, new Rectangle(125, 50, 550, 550), Color.DarkGray);
+            }
 
-            _spriteBatch.Draw(catIntroTexture, new Rectangle(100,0,600,600), Color.White);
+            else if (screen == Screen.Galaxy)
+            {
+                _spriteBatch.Draw(background, new Rectangle(0, 0, 800, 600), Color.White);
+
+                _spriteBatch.Draw(catBodyTexture, new Rectangle(125, 50, 550, 550), Color.White);
+                _spriteBatch.Draw(catHeadTexture, new Rectangle(125, 50, 550, 550), Color.White);
+            }
 
             _spriteBatch.End();
-
 
             base.Draw(gameTime);
         }
